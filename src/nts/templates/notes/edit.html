@@ -1,0 +1,168 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="container mt-5">
+    <div class="row flex-lg-nowrap">
+      <div class="col-12 col-lg-auto mb-3" style="width: 200px;">
+        <div class="card p-3">
+          <div class="e-navlist e-navlist--active-bg">
+            <ul class="nav">
+              <li class="nav-item">
+                {% if note.image_file %}
+                <a class="nav-link px-2 active" href="{{ url_for('static', filename='note_background/' + note.image_file ) }}" 
+                    target="_blank" title="This will redirect you to your note background image" alt="Note image">
+                  <img src="{{ url_for('static', filename='note_background/' + note.image_file ) }}" width="125px" height="125px" style="border-radius: 50%;">
+                </a>
+                {% else %}
+                  Here is place for your note background image.
+                {% endif %}
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    
+      <div class="col-12">
+        <div class="row"> 
+          <div class="col mb-3">
+            <div class="card">
+              <div class="card-body">
+                <div class="e-profile">
+                  <div class="row">
+                    <div class="col-12 col-sm-auto mb-3">   
+                    </div>
+                  </div>
+                  <ul class="nav nav-tabs">
+                    <li class="nav-item"><a href="{{ url_for('notes_add') }}" class="nav-link">Add</a></li>
+                    <li class="nav-item"><a href="" class="active nav-link">Edit</a></li>
+                    <li class="nav-item"><a href="{{ url_for('note', note_id=note.id)}}" class="nav-link">Note {{ note.id}}</a></li>
+                  </ul>
+                  <div class="tab-content pt-3">
+                    <div class="tab-pane active">
+                      <form class="form" method="POST" enctype="multipart/form-data">
+                      {{ form.csrf_token() }}
+                        <div class="row">
+                          <div class="col">
+                            <div class="row">
+                              <div class="col">
+                                <div class="form-group">
+                                  <label>Title</label>
+                                    {% if form.title.errors %}
+                                    {{ form.title(class="form-control is-invalid") }}
+                                    <div class="invalid-feedback">
+                                            {% for error in form.title.errors %}
+                                                <span>{{ error }}</span>
+                                            {% endfor %}
+                                     </div>
+                                    {% else %}
+                                            {{ form.title(class_='form-control')}}
+                                    {% endif %}
+                                </div>
+                              </div>
+                            </div>
+                            <div class="row">
+                              <div class="col mb-3">
+                                <div class="form-group">
+                                    <label>Your note content</label>   
+                                    {% if form.content.errors %}
+                                    {{ form.content(class="form-control is-invalid",  rows='10') }}
+                                    <div class="invalid-feedback">
+                                            {% for error in form.content.errors %}
+                                                <span>{{ error }}</span>
+                                            {% endfor %}
+                                    </div>
+                                    {% else %}
+                                            {{ form.content(class_='form-control', rows="10")}}
+                                    {% endif %}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        {% if form.privacy.errors %}
+                        {{ form.privacy(class="form-control is-invalid") }}
+                        <div class="invalid-feedback">
+                                {% for error in form.privacy.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                        </div>
+                        {% else %}
+                                {{ form.privacy(class_='form-control')}}
+                        {% endif %}
+                        <div class="form-group mt-4">
+                          {{ form.picture.label() }}
+                          {{ form.picture(class="form-control-file ") }}
+                          {% if form.picture.errors %}
+                            {% for error in form.picture.errors %}
+                                      <span class="text-danger">{{ error }}</span> <br></br>
+                                  {% endfor %}
+                          {% endif %}
+                        </div>
+                        <div class="row">
+                          <div class="col d-flex justify-content-end">
+                            <a class="btn btn-danger mt-3 mr-3"href="#myModal" data-toggle="modal">Delete</a>
+                            {{ form.submit(class="btn btn-primary mt-3") }}
+                          </div>
+                        </div>
+                              <!-- Modal HTML -->
+                            <div id="myModal" class="modal fade">
+                              <div class="modal-dialog modal-confirm">
+                                  <div class="modal-content">
+                                      <div class="modal-header flex-column">
+                                          <div class="icon-box">
+                                              <i class="material-icons">&#xE5CD;</i>
+                                          </div>						
+                                          <h4 class="modal-title w-100">Are you sure?</h4>	
+                                          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                      </div>
+                                      <div class="modal-body">
+                                          <p>Do you really want to delete this note [{{ note.title }}]? This process cannot be undone.</p>
+                                      </div>
+                                      <div class="modal-footer justify-content-center">
+                                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                          <a href="{{ url_for('note_delete', note_id=note.id) }}">
+                                              <button type="button" class="btn btn-danger">Delete</button>
+                                          </a>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div> 
+                      </form>
+    
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+    
+          <div class="col-12 col-md-3 mb-3">
+            <div class="card mb-3">
+              <div class="card-body">
+                <div class="px-xl-3">
+                  <button class="btn btn-block btn-secondary">
+                    <i class="fa fa-sign-out"></i>
+                    <span>Logout</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-body">
+                <h6 class="card-title font-weight-bold">Support</h6>
+                <p class="card-text">Get fast, free help from our friendly assistants.</p>
+                <button type="button" class="btn btn-primary">Contact Us</button>
+              </div>
+            </div>
+
+            <div class="card mt-3">
+              <div class="card-body">
+                <h6 class="card-title">After editing your note date will change to today date !!!  <b>[ {{ date.strftime("%d/%m/%Y, %H:%M:%S") }} ] </b>.</h6>
+              </div>
+            </div>
+          </div>
+        </div>
+    
+      </div>
+    </div>
+    </div>
+{% endblock %}

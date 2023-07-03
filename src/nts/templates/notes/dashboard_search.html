@@ -1,0 +1,98 @@
+{% extends 'layout.html' %}
+{% block content %}
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet" href="{{ url_for('static', filename='note.css')}}">
+
+
+<div id="layoutSidenav_content">
+  <main>
+    <div class="col-md-12 mt-5">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+    </div>
+
+      <div class="container-fluid">
+          <h1 class="mt-4">Tables</h1>
+          <ol class="breadcrumb mb-4">
+              <li class="breadcrumb-item"><a href="{{ url_for('notes') }}">Notes</a></li>
+              <li class="breadcrumb-item active">Your Notes Dashboard [{{current_user.username}}]</li>
+          </ol>
+          <div class="card mb-4">
+              <div class="card-header">
+                  <i class="fa fa-sticky-note mr-1"></i>
+                  Note Table
+                  <form class="mt-2" method="GET" action="/notes/dashboard/search">
+                      <div class="input-group">
+                          <input class="form-control" value="{{ q }}" type="text" placeholder="Search for note..." aria-label="Search" aria-describedby="basic-addon2" name="q" />
+                          <div class="input-group-append">
+                              <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i></button>
+                          </div>
+                      </div>
+                      <small class="text-muted ml-1">Search engine is searching your input in note id, title, content and privacy.</small>
+                  </form>
+              </div>
+              <a href=""><button type="button" class="btn btn-success ml-3 mt-3">Create new note</button></a>
+              <div class="card-body">
+                  <div class="table-responsive">
+                      <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                          <thead>
+                              <tr>
+                                  <th>#Date_Posted</th>
+                                  <th>Title</th>
+                                  <th>Content</th>
+                                  <th>Privacy</th>
+                                  <th>Edit</th>
+                              </tr>
+                          </thead>
+                          <tfoot>
+                              <tr>
+                                  <th>#Date_Posted</th>
+                                  <th>Title</th>
+                                  <th>Content</th>
+                                  <th>Privacy</th>
+                                  <th>Edit</th>
+                              </tr>
+                          </tfoot>
+                          <tbody>
+                            {% for note in notes %}
+                              <tr>
+                                  <td>{{ note.date_posted.strftime("%d/%m/%Y, %H:%M:%S") }}</td>
+                                  <td><a href="{{ url_for('note', note_id=note.id)}}">{% if note.title %}{{ note.title }}{% else %}Note [{{ note.id}}] {% endif %}</a></td>
+                                  <td>{{ note.content|truncate(50) }}</td>
+                                  {% if note.privacy == 'Private' %}
+                                  <td><span style="color:red">{{ note.privacy }}</span></td>
+                                  {% else %}
+                                  <td><span style="color:green">{{ note.privacy }}</span></td>
+                                  {% endif %}
+                                  <td><a href="{{ url_for('note_edit', note_id=note.id) }}">Edit</a></td>
+                              </tr>   
+                            {% endfor %}
+                          </tbody>
+                      </table>
+                  </div>
+              </div>
+            
+          </div>
+      </div>
+  </main>
+  <footer class="py-4 bg-light mt-auto">
+      <div class="container-fluid">
+          <div class="d-flex align-items-center justify-content-between small">
+              <div class="text-muted">Copyright &copy; Texos 2020</div>
+              <div>
+                  <a href="#">Privacy Policy</a>
+                  &middot;
+                  <a href="#">Terms &amp; Conditions</a>
+              </div>
+          </div>
+      </div>
+  </footer>
+</div>
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<section>
+    
+    <div class="container">
+        <div class="text-center m-5">
+            <h5 class="text-primary h6 text-capitalize">{{ current_user.username }}</h5>
+            <h2 class="display-20 display-md-18 display-lg-16">Your notes</h2>
+        </div>
+        <div class="col-md-12 mt-5">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+        </div>
+        <div class="row">
+        {% if notes %}
+            {% for note in notes %}
+            <div class="col-lg-4 col-md-6 mb-3">
+                <article class="card card-style2">
+                    <div class="card-img">
+                        {% if note.image_file %}
+                        <a href="{{ url_for('note', note_id=note.id)}}">
+                            <img class="rounded-top"
+                                src="{{ url_for('static', filename='note_background/' + note.image_file) }}" alt="">
+                        </a>
+                        {% else %}
+                        <img class="rounded-top" src="" alt="">
+                        {% endif %}
+                        
+                    </div>
+                    <div class="card-body">
+                        <h3 class="h5"><a href="{{ url_for('note', note_id=note.id)}}">
+                                {% if note.title %}{{note.title}}{% else %}Note {{ note.id}} {% endif %}</a></h3>
+                        {% if note.image_file %}
+                        <p class="display-30">{{ note.content|truncate(100) }}.</p>
+                        {% else %}
+                        <p class="display-30">{{ note.content|truncate(360) }}.</p>
+                        {% endif %}
+                        <a href="{{ url_for('note', note_id=note.id)}}" class="read-more">read more</a>
+                    </div>
+                    <div class="card-footer">
+                        <ul>
+                            <li>
+                                <a href="{{ url_for('search', q=note.date_posted.strftime('%Y-%m-%d') )}}">
+                                    <span>{{note.date_posted.strftime("%d/%m/%Y, %H:%M:%S") }}</span>
+                                </a>
+                                <div class="id" title="Note ID">{{note.id}}</div>
+                            </li>
+                            <li>
+                                <div class="dropdown ml-5">
+                                    <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton"
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fa fa-cog"></i>
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <a class="dropdown-item" href="{{ url_for('note_edit', note_id = note.id) }}">
+                                            <i class="fa fa-wrench" aria-hidden="true"></i>Edit
+                                        </a>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </article>
+            </div>
+            {% endfor %}
+        {% else %}
+        Create a new notes!
+        {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

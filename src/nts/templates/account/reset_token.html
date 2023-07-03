@@ -1,0 +1,67 @@
+{% extends 'layout.html' %}
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='forms.css') }}">
+
+
+<div class="signup-form mt-5">
+    <form method="post" class="form-horizontal">
+        {{ form.csrf_token() }}
+        <div class="col-md-8">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+        </div>
+      	<div class="row">
+        	<div class="col-8 offset-4">
+				<h2>Reset your password</h2>
+			</div>	
+      	</div>			
+		<div class="form-group row">
+			<label class="col-form-label col-4">Password</label>
+			<div class="col-8">
+                <div class="input-group">
+                    {% if form.password.errors %}
+                    {{ form.password(class="form-control is-invalid",  id_='input-password') }}
+                    <div class="invalid-feedback">
+                        {% for error in form.password.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.password(class_='form-control', id_='input-password')}}
+                    {% endif %}
+                </div>
+            </div>        	
+        </div>
+		<div class="form-group row">
+			<label class="col-form-label col-4">Confirm Password</label>
+			<div class="col-8">
+                <div class="input-group">
+                    {% if form.confirm_password.errors %}
+                    {{ form.confirm_password(class="form-control is-invalid",  id_='input-confirm') }}
+                    <div class="invalid-feedback">
+                        {% for error in form.confirm_password.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.confirm_password(class_='form-control', id_='input-confirm')}}
+                    {% endif %}
+                </div>
+            </div>        	
+        </div>
+		<div class="form-group row">
+			<div class="col-8 offset-4">
+				<button type="submit" class="btn btn-primary btn-lg">Confirm</button>
+			</div>  
+		</div>		      
+    </form>
+	<div class="text-center">Already have an account? <a href="/login">Login here</a></div>
+</div>
+{% endblock %}

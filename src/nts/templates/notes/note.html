@@ -1,0 +1,295 @@
+{% extends 'layout.html' %}
+{% block content %}
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.4.1/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.4.1/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<style>
+  body {
+    font-family: 'Varela Round', sans-serif;
+  }
+
+  .modal-confirm {
+    color: #8e8e8e;
+    width: 450px;
+  }
+
+  .modal-confirm .modal-content {
+    padding: 20px;
+    border-radius: 5px;
+    border: none;
+  }
+
+  .modal-confirm .modal-header {
+    border-bottom: none;
+    position: relative;
+    justify-content: center;
+    border-radius: 5px 5px 0 0;
+  }
+
+  .modal-confirm h4 {
+    color: #545557;
+    text-align: center;
+    font-size: 30px;
+    margin: 0 0 25px;
+  }
+
+  .modal-confirm .form-control,
+  .modal-confirm .btn {
+    min-height: 40px;
+    border-radius: 3px;
+  }
+
+  .modal-confirm .close {
+    background: #c0c3c8;
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    color: #fff;
+    text-shadow: none;
+    opacity: 0.5;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    border-radius: 20px;
+    font-size: 16px;
+  }
+
+  .modal-confirm .close:hover {
+    opacity: 0.8;
+  }
+
+  .modal-confirm .icon-box {
+    color: #f15e5e;
+    display: inline-block;
+    z-index: 9;
+    text-align: center;
+    position: relative;
+    transform: scale(2.8);
+  }
+
+  .modal-confirm .icon-box i:first-child {
+    font-size: 100px;
+  }
+
+  .modal-confirm .icon-box i:nth-child(2) {
+    font-size: 138px;
+    position: absolute;
+    left: -19px;
+    top: -23px;
+    font-weight: bold;
+    color: #fff;
+  }
+
+  .modal-confirm .icon-box i:last-child {
+    font-size: 26px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    top: 44px;
+  }
+
+  .modal-confirm .btn {
+    color: #fff;
+    border-radius: 4px;
+    background: #f15e5e;
+    text-decoration: none;
+    transition: all 0.4s;
+    line-height: normal;
+    border-radius: 3px;
+    margin: 30px 0 20px;
+    padding: 6px 20px;
+    min-width: 150px;
+    border: none;
+  }
+
+  .modal-confirm .btn:hover,
+  .modal-confirm .btn:focus {
+    background: #d03c3c;
+    outline: none;
+  }
+
+  .trigger-btn {
+    display: inline-block;
+    margin: 100px auto;
+  }
+
+  .przycisk {
+    position: relative;
+    right: 6.8px;
+  }
+</style>
+
+
+<div class="container mt-5">
+  <div class="row flex-lg-nowrap">
+    <div class="col-12 col-lg-auto mb-3" style="width: 200px;">
+      <div class="card p-3">
+        <div class="e-navlist e-navlist--active-bg">
+          <ul class="nav">
+            <li class="nav-item">
+              {% if note.image_file %}
+
+              <!-- Button trigger modal -->
+              <button type="button" class="btn btn-light przycisk" data-toggle="modal"
+                data-target="#exampleModalCenter">
+                <img src="{{ url_for('static', filename='note_background/' + note.image_file ) }}" width="125px"
+                  height="125px" style="border-radius: 50%;">
+              </button>
+
+              <!-- Modal -->
+              <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+                aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <a href="{{ url_for('static', filename='note_background/' + note.image_file ) }}" target="_blank">
+                        <h5 class="modal-title" id="exampleModalLongTitle">{{ note.image_file }}</h5>
+                      </a>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body text-center">
+                      <img src="{{ url_for('static', filename='note_background/' + note.image_file ) }}">
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <a href="{{ url_for('user_page', username=note.author.username) }}" class="text-center">
+                <div class="text-center text-capitalize mt-2 mr-3">{{ note.author.username }}</div>
+              </a>
+              {% else %}
+              Here is place for your note background image.
+              <a href="{{ url_for('user_page', username=note.author.username) }}" class="text-center">
+                <div class="text-center text-capitalize mt-2 mr-3">{{ note.author.username }}</div>
+              </a>
+              {% endif %}
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12">
+      <div class="row">
+        <div class="col mb-3">
+          <div class="card">
+            <div class="card-body">
+              <div class="e-profile">
+                <div class="row">
+                  <div class="col-12 col-sm-auto mb-3">
+                  </div>
+                </div>
+                <ul class="nav nav-tabs">
+                  <li class="nav-item"><a href="{{ url_for('notes_add') }}" class="nav-link">Add</a></li>
+                  {% if current_user == note.author %}
+                  <li class="nav-item"><a href="{{ url_for('note_edit', note_id = note.id) }}"" class="
+                      nav-link">Edit</a></li>
+                  {% endif %}
+                  <li class="nav-item"><a href="" class="active nav-link">Note {{ note.id}}</a></li>
+                </ul>
+                <div class="tab-content pt-3">
+                  <div class="tab-pane active">
+                    <div class="row">
+                      <div class="col">
+                        <div class="row">
+                          <div class="col">
+                            <div class="form-group">
+                              <h1>{{ note.title }}</h1>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col mb-3">
+                            <div class="form-group">
+                              <label>Note content:</label>
+                              <textarea class="form-control" rows="15" disabled>{{ note.content }}</textarea>
+                            </div>
+                            <div class="form-group">
+                              <label>Raw paste data:</label>
+                              <textarea class="form-control" rows="10">{{ note.content }}</textarea>
+                            </div>
+                            <div class="form-group">
+                              <label>Syntax highlight:</label>
+                              <pre>
+                                <code class="autodetect">{{ note.content }}</code>
+                              </pre>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+
+                </div>
+                {% if title == 'Note' %}
+                <div class="row">
+                  <div class="col d-flex justify-content-end">
+                    <a class="btn btn-primary mt-3 mr-3" href="#myModal" data-toggle="modal">Share</a>
+                  </div>
+                </div>
+
+                <!-- Modal HTML -->
+                <div id="myModal" class="modal fade">
+                  <div class="modal-dialog modal-confirm">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <div class="icon-box">
+                          <span class="material-icons">
+                            share
+                          </span>
+                        </div>
+                        <button type="button" class="close" data-dismiss="modal"
+                          aria-hidden="true"><span>&times;</span></button>
+                      </div>
+                      <script>
+                        function copyFunc() {
+                          var copyText = document.getElementById("link");
+                          copyText.select();
+                          copyText.setSelectionRange(0, 99999)
+                          document.execCommand("copy");
+                          /// alert("NoteInfo: Copied text is " + copyText.value);
+                        }
+                      </script>
+                      <div class="modal-body text-center">
+                        <h4>Share this note - <b>{{note.title}}</b></h4>
+                        {% if note.privacy == 'Public' %}
+                        <p>This note status is set to <span style="color:green"><a href="" style="color:green">Public</a></span>.</p>
+                        <input class="form-control" type="text" id="link" name="link"
+                          value="http://localhost:5000{{ url_for('note', note_id = note.id) }}">
+                        {% elif note.privacy == 'Private' %}
+                        <p>Your note status is set to <span style="color:red">Private</span>. Nobody can't see this note
+                          except you but If you copy this link and give it to somebody he can view this note with this
+                          link. </p>
+                        <input class="form-control" type="text" id="link" name="link"
+                          value="http://localhost:5000{{ url_for('share', note_id = note.id,token=token ) }}">
+                        {% else %}
+                        {% endif %}
+                        <button onclick="copyFunc()" class="btn btn-primary" data-dismiss="modal">Copy</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+
+</div>
+</div>
+</div>
+{% endblock %}

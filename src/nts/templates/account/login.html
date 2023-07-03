@@ -1,0 +1,69 @@
+{% extends 'layout.html' %}
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='forms.css') }}">
+
+
+<div class="signup-form mt-5">
+    <form method="post" class="form-horizontal">
+        {{ form.csrf_token() }}
+        <div class="col-md-12">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+        </div>
+        <div class="row">
+            <div class="col-8 offset-4">
+                <h2>Sign In</h2>
+            </div>
+        </div>
+        <div class="form-group row mt-5">
+            <label class="col-form-label col-4">Email Address</label>
+            <div class="col-8">
+                <div class="input-group">
+                    {% if form.email.errors %}
+                    {{ form.email(class="form-control is-invalid", id_='input-email') }}
+                    <div class="invalid-feedback">
+                        {% for error in form.email.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.email(class_='form-control', id_='input-email')}}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="form-group row mt-4">
+            <label class="col-form-label col-4">Password</label>
+            <div class="col-8">
+                <div class="input-group">
+                    {% if form.password.errors %}
+                    {{ form.password(class="form-control is-invalid", id_='input-password') }}
+                    <div class="invalid-feedback">
+                        {% for error in form.password.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.password(class_='form-control', id_='input-password')}}
+                    {% endif %}
+                    <a href="{{ url_for('reset_request') }}" class="input-group mt-3"> Forgot password?</a>
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-8 offset-4 mt-2">
+                <p><label class="form-check-label">{{ form.remember(type="checkbox")}} Remember me </label></p>
+                {{ form.submit(class_='btn btn-primary btn-lg mt-4')}}
+            </div>
+        </div>
+    </form>
+    <div class="text-center">Doesn't have an account? <a href="/register">Sign Up</a></div>
+</div>
+{% endblock %}
